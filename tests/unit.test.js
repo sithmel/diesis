@@ -6,11 +6,13 @@ const assert = require('chai').assert
 describe('diesis', () => {
   it('returns a function', () => {
     assert.typeOf(diesis, 'function')
-    assert.typeOf(diesis([], ()=>{}), 'function')
+    assert.typeOf(diesis([], () => {}), 'function')
   })
 
   it('curries', () => {
-    const a = 1, b = 2, func = () => {}
+    const a = 1
+    const b = 2
+    const func = () => {}
     const d = diesis([a, b])(func)
     assert.equal(d.dep.deps().length, 2)
   })
@@ -22,8 +24,9 @@ describe('diesis', () => {
   })
 
   it('exposes dependencies', () => {
-    const a = 1, b = 2
-    const d = diesis([a, b], ()=>{})
+    const a = 1
+    const b = 2
+    const d = diesis([a, b], () => {})
     assert.equal(d.dep.deps().length, 2)
     for (const dep of d.dep.deps()) {
       assert.instanceOf(dep, Dependency)

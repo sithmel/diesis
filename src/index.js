@@ -1,6 +1,6 @@
 const Dependency = require('./dependency')
 
-function diesis(deps, func) {
+function diesis (deps, func) {
   const hasDependencies = Array.isArray(deps)
   if (!hasDependencies) {
     func = deps
@@ -8,9 +8,9 @@ function diesis(deps, func) {
   }
   const shouldCurry = typeof func === 'undefined'
 
-  function curried(func) {
+  function curried (func) {
     const dep = new Dependency(deps, func)
-    function _diesis(obj) {
+    function _diesis (obj) {
       return dep.runGraph(obj)
     }
     _diesis.dep = dep

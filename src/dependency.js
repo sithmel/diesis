@@ -1,5 +1,5 @@
 class Dependency {
-  constructor(deps, func) {
+  constructor (deps, func) {
     this._deps = deps.map((d) => {
       if (d instanceof Dependency) {
         return d
@@ -12,7 +12,7 @@ class Dependency {
     this.func = typeof func === 'function' ? func : () => func
   }
 
-  runGraph(_cache = {}) {
+  runGraph (_cache = {}) {
     const cache = _cache instanceof Map ? _cache : new Map(Object.entries(_cache))
 
     const getPromiseFromDep = (dep) => {
@@ -30,12 +30,12 @@ class Dependency {
     return getPromiseFromDep(this)
   }
 
-  run(deps) {
+  run (deps) {
     return Promise.resolve()
       .then(() => this.func(...deps))
   }
 
-  deps() {
+  deps () {
     return this._deps
   }
 }
