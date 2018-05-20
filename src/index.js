@@ -1,6 +1,6 @@
 const Dependency = require('./dependency')
 
-function dependsOn(deps) {
+function dependsOn (deps) {
   function curried (func) {
     const dep = new Dependency(deps, func)
     function _dependsOn (obj) {
@@ -12,11 +12,11 @@ function dependsOn(deps) {
   return curried
 }
 
-function dependency(deps, func) {
+function dependency (deps, func) {
   return dependsOn(deps)(func)
 }
 
-function runMulti(deps, obj) {
+function runMulti (deps, obj) {
   const dep = new Dependency(deps, (...deps) => deps)
   return dep.run(obj)
 }
