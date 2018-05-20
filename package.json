@@ -33,6 +33,7 @@
     "npm-release": "^1.0.0"
   },
   "dependencies": {
-    "uuid": "^3.2.1"
+    "little-ds-toolkit": "^1.0.0",
+    "obj-uuid": "0.0.1"
   }
 }

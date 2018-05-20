@@ -1,4 +1,5 @@
 const Dependency = require('./dependency')
+const cacheDependency = require('./cache-dependency')
 
 function dependsOn (deps) {
   function curried (func) {
@@ -21,4 +22,4 @@ function runMulti (deps, obj) {
   return dep.run(obj)
 }
 
-module.exports = { Dependency, dependency, dependsOn, runMulti }
+module.exports = { Dependency, dependency, dependsOn, runMulti, cacheDependency }
