@@ -1,5 +1,6 @@
 /* eslint-env node, mocha */
-const diesis = require('../src')
+const dependency = require('../src').dependency
+const runMulti = require('../src').runMulti
 const assert = require('chai').assert
 
 describe('solve graphs', () => {
@@ -20,37 +21,44 @@ describe('solve graphs', () => {
 
       */
       counter = { a: 0, b: 0, c: 0, d: 0 }
-      a = diesis(() => {
+      a = dependency(() => {
         counter.a++
         return 'A'
       })
-      b = diesis([a], (a) => {
+      b = dependency([a], (a) => {
         counter.b++
         return a + 'B'
       })
-      c = diesis([a, b], (a, b) => {
+      c = dependency([a, b], (a, b) => {
         counter.c++
         return a + b + 'C'
       })
-      d = diesis([b, c], (b, c) => {
+      d = dependency([b, c], (b, c) => {
         counter.d++
         return b + c + 'D'
       })
     })
 
     it('must return leftmost dep', () =>
-      a().then((dep) => assert.deepEqual(dep, 'A')))
+      a().then((dep) => assert.equal(dep, 'A')))
 
     it('must return middle dep', () =>
-      b().then((dep) => assert.deepEqual(dep, 'AB')))
+      b().then((dep) => assert.equal(dep, 'AB')))
 
     it('must return middle dep (2)', () =>
-      c().then((dep) => assert.deepEqual(dep, 'AABC')))
+      c().then((dep) => assert.equal(dep, 'AABC')))
 
     it('must return rightmost dep', () =>
-      d().then((dep) => assert.deepEqual(dep, 'ABAABCD')))
+      d().then((dep) => assert.equal(dep, 'ABAABCD')))
 
     it('must execute dep only once', () =>
       d().then((dep) => assert.deepEqual(counter, { a: 1, b: 1, c: 1, d: 1 })))
+
+    it('run multiple', () =>
+      runMulti([b, d], {})
+        .then((res) => {
+          assert.deepEqual(res, [ 'AB', 'ABAABCD' ])
+          assert.deepEqual(counter, { a: 1, b: 1, c: 1, d: 1 })
+        }))
   })
 })

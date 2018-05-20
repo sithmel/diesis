@@ -1,24 +1,22 @@
 class Dependency {
   constructor (deps, func) {
-    this._deps = deps.map((d) => {
-      if (d instanceof Dependency) {
-        return d
-      } else if (typeof d === 'function' && d.dep instanceof Dependency) {
-        return d.dep
-      }
-      return new Dependency([], d)
-    })
+    if (typeof func === 'undefined') {
+      func = deps
+      deps = []
+    }
+    deps = deps || []
+    this._deps = typeof deps === 'function' ? deps : () => deps
     this.id = typeof func === 'function' ? this : func
     this.func = typeof func === 'function' ? func : () => func
   }
 
-  runGraph (_cache = {}) {
+  run (_cache = {}) {
     const cache = _cache instanceof Map ? _cache : new Map(Object.entries(_cache))
 
     const getPromiseFromDep = (dep) => {
       if (!cache.has(dep.id)) {
-        const value = getPromisesFromDeps(dep.deps())
-          .then((deps) => dep.run(deps))
+        const value = getPromisesFromDeps(dep.deps(cache))
+          .then((deps) => dep.func(...deps))
         cache.set(dep.id, value)
       }
       return cache.get(dep.id)
@@ -30,13 +28,15 @@ class Dependency {
     return getPromiseFromDep(this)
   }
 
-  run (deps) {
-    return Promise.resolve()
-      .then(() => this.func(...deps))
-  }
-
-  deps () {
-    return this._deps
+  deps (cache) {
+    return this._deps(cache).map((d) => {
+      if (d instanceof Dependency) {
+        return d
+      } else if (typeof d === 'function' && d.dep instanceof Dependency) {
+        return d.dep
+      }
+      return new Dependency([], d)
+    })
   }
 }
 

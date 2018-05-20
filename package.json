@@ -1,7 +1,7 @@
 {
   "name": "diesis",
   "version": "0.0.0",
-  "description": "Easy dependency injection",
+  "description": "A declarative dependency injection library",
   "main": "src/index.js",
   "scripts": {
     "test": "mocha tests/*.js",

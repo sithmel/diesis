@@ -1,26 +1,24 @@
 const Dependency = require('./dependency')
 
-function diesis (deps, func) {
-  const hasDependencies = Array.isArray(deps)
-  if (!hasDependencies) {
-    func = deps
-    deps = []
-  }
-  const shouldCurry = typeof func === 'undefined'
-
+function dependsOn(deps) {
   function curried (func) {
     const dep = new Dependency(deps, func)
-    function _diesis (obj) {
-      return dep.runGraph(obj)
+    function _dependsOn (obj) {
+      return dep.run(obj)
     }
-    _diesis.dep = dep
-    return _diesis
-  }
-
-  if (!shouldCurry) {
-    return curried(func)
+    _dependsOn.dep = dep
+    return _dependsOn
   }
   return curried
 }
 
-module.exports = diesis
+function dependency(deps, func) {
+  return dependsOn(deps)(func)
+}
+
+function runMulti(deps, obj) {
+  const dep = new Dependency(deps, (...deps) => deps)
+  return dep.run(obj)
+}
+
+module.exports = { Dependency, dependency, dependsOn, runMulti }
