@@ -104,11 +104,9 @@ A more meaningful example
 If you are still struggling to understand how this can be useful, here's a more articulated example. For making it simpler I'll omit the implementation of these functions, providing only a description.
 ```js
 const dependency = require('diesis').dependency
-const cacheDependency = require('diesis').cacheDependency
+const memoize = require('diesis').memoize
 
-const cacheForever = cacheForever({ len: 1 })
-
-const dbConnection = dependency([], cacheForever(() => {
+const dbConnection = dependency([], memoize(() => {
   // this function returns the connection to a db
   // this function is memoized to avoid creating multiple connections
 }))
@@ -137,7 +135,7 @@ renderTemplate({ userId: 12345, resourceId: 23456 })
 
 Testing
 -------
-The function returned by "dependency" contains a "dependency" object under the property "dep". This object contains the original function as "func". This can be used to test the function in isolation:
+The function returned by "dependency" contains a "Dependency" instance under the property "dep". This object contains the original function as "func". This can be used to test the function in isolation:
 ```js
 const hello = dependency(() => 'hello')
 const world = dependency([hello], (s) => `${s} world`)
@@ -156,13 +154,23 @@ const readFile = dependency(['filename'], promisify((filename, callback) => {
   // ...
 }))
 ```
-You can find many useful decorators in [async-deco](https://github.com/sithmel/async-deco) library (use the promise based ones).
+
+Included decorators
+-------------------
+You frequently need to cache the output of a dependency, for example when creating a connection to external resources. This package includes a decorators to do so.
+The memoize decorator caches the dependency forever, if the function didn't throw an exception.
+```js
+const memoize = require('diesis').memoize
+
+const memoizedDep = dependency([a, b], memoize((a, b) => {
+  // ...
+}))
+```
 
 cacheDependency decorator
 -------------------------
-You frequently need to cache the output of a dependency, for example when creating a connection to external resources. This package includes a decorator to do so.
-It works for function returning synchronously or returning a promise.
-The cache key is based on the arguments (strict equality).
+the cacheDependency decorator allows you to fine tune the dependency caching.
+The result is cached against the arguments. They are checked by reference (strict equality).
 If the decorated function throws an exception or returns a rejected promise, this is not cached.
 
 The decorator uses a LRU cache algorithm to decide whether to get rid of a cached value.
@@ -177,6 +185,8 @@ const cachedDep = dependency([a, b], cacheTTL((a, b) => {
 ```
 * len: is the number of items in the cache
 * ttl: is the time to live of cached items (in ms)
+
+**You can find many useful decorators in [async-deco](https://github.com/sithmel/async-deco) library (use the promise based ones).**
 
 Compatibility
 -------------
