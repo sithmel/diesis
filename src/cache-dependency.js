@@ -14,7 +14,7 @@ function cacheDependency ({ len, ttl }) {
         return result
           .then((res) => {
             cache.set(key, result)
-            return Promise.resolve(res)
+            return result // resolved promise
           })
       } else {
         cache.set(key, result)

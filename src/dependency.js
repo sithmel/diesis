@@ -1,3 +1,11 @@
+class Value {
+  constructor (value) {
+    this.deps = () => []
+    this.id = value
+    this.func = () => value
+  }
+}
+
 class Dependency {
   constructor (deps, func) {
     if (typeof func === 'undefined') {
@@ -6,7 +14,7 @@ class Dependency {
     }
     deps = deps || []
     this._deps = typeof deps === 'function' ? deps : () => deps
-    this.id = typeof func === 'function' ? this : func
+    this.id = this
     this.func = typeof func === 'function' ? func : () => func
   }
 
@@ -15,9 +23,13 @@ class Dependency {
 
     const getPromiseFromDep = (dep) => {
       if (!cache.has(dep.id)) {
-        const value = getPromisesFromDeps(dep.deps(cache))
-          .then((deps) => dep.func(...deps))
-        cache.set(dep.id, value)
+        try {
+          const value = getPromisesFromDeps(dep.deps(cache))
+            .then((deps) => dep.func(...deps))
+          cache.set(dep.id, value)
+        } catch (err) {
+          return Promise.reject(err)
+        }
       }
       return cache.get(dep.id)
     }
@@ -29,13 +41,19 @@ class Dependency {
   }
 
   deps (cache) {
-    return this._deps(cache).map((d) => {
+    const _deps = this._deps(cache)
+    if (!Array.isArray(_deps)) {
+      throw new Error('A dependency should depend on an array of dependencies or values (not an array)')
+    }
+    return _deps.map((d) => {
       if (d instanceof Dependency) {
         return d
       } else if (typeof d === 'function' && d.dep instanceof Dependency) {
         return d.dep
+      } else if (typeof d === 'string') {
+        return new Value(d)
       }
-      return new Dependency([], d)
+      throw new Error('A dependency should depend on an array of dependencies or values (not a dependency or a string)')
     })
   }
 }

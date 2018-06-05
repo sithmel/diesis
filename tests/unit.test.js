@@ -6,8 +6,8 @@ const assert = require('chai').assert
 
 describe('dependsOn', () => {
   it('curries', () => {
-    const a = 1
-    const b = 2
+    const a = dependency(1)
+    const b = dependency(2)
     const func = () => {}
     const d = dependsOn([a, b])(func)
     assert.equal(d.dep.deps().length, 2)
@@ -27,8 +27,8 @@ describe('dependency', () => {
   })
 
   it('exposes dependencies', () => {
-    const a = 1
-    const b = 2
+    const a = dependency(1)
+    const b = dependency(2)
     const d = dependency([a, b], () => {})
     assert.equal(d.dep.deps().length, 2)
     for (const dep of d.dep.deps()) {
@@ -107,22 +107,14 @@ describe('Dependency', () => {
         })
     })
 
-    it('allows injecting a value (use obj)', (done) => {
+    it('does not allows injecting a value (use obj)', (done) => {
       const obj = {}
-      let d1Execution = 0
-      const d1 = new Dependency([], () => {
-        d1Execution++
-        return 2
-      })
-      const d2 = new Dependency([d1], () => {
-        return 2 + 3
-      })
-      const d3 = new Dependency([d1, d2, obj], (d1, d2, mul) => d1 * d2 * mul)
+      const d3 = new Dependency([obj], (mul) => 10 * mul)
 
       d3.run(new Map([[obj, 10]]))
-        .then((res) => {
-          assert.equal(res, 100)
-          assert.equal(d1Execution, 1)
+        .catch(e => {
+          console.log(e)
+          assert.equal(e.message, 'A dependency should depend on an array of dependencies or values (not a dependency or a string)')
           done()
         })
     })
