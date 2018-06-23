@@ -1,6 +1,6 @@
 {
   "name": "diesis",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "A declarative dependency injection library",
   "main": "es2015/index",
   "module": "es2015/index.mjs",
