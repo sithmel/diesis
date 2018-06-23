@@ -1,6 +1,6 @@
 /* eslint-env node, mocha */
-const dependency = require('../src').dependency
-const runMulti = require('../src').runMulti
+const dependency = require('../es2015').dependency
+const runMulti = require('../es2015').runMulti
 const assert = require('chai').assert
 
 describe('solve graphs', () => {

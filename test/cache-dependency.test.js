@@ -1,5 +1,5 @@
 /* eslint-env node, mocha */
-const cacheDependency = require('../src/cache-dependency')
+const cacheDependency = require('../es2015').cacheDependency
 const assert = require('chai').assert
 
 function delay (ms) {

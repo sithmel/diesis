@@ -7,6 +7,21 @@ Diesis is a declarative dependency injection library.
 It allows to define a group of functions in a graph of dependencies, removing the manual wiring necessary to connect the functions one another. It also ensures every dependency is executed at most once.
 It works with functions returning synchronously or asynchronously (returning a promise).
 
+Importing diesis
+----------------
+You can import diesis as ES module or using commonjs:
+```js
+import { dependency } from 'diesis'
+
+const dependency = require('diesis').dependency
+```
+The library is compatible with ES2015 (ES6). You can also import an ES5 transpiled version with:
+```js
+import { dependency } from 'diesis/es5'
+
+const dependency = require('diesis/es5').dependency
+```
+
 Using diesis
 ------------
 Let's start with 2 simple functions, one depending on another:
@@ -173,6 +188,7 @@ If the decorated function throws an exception or returns a rejected promise, thi
 
 The decorator uses a LRU cache algorithm to decide whether to get rid of a cached value.
 It also supports a time-to-live for cached values. But you have to consider stale cache entries are not removed until the size of the cache exceeds the length. This allows to keep the running time of the algorithm constant (O(1)) for any operation.
+The cache is local to the process. So multiple process will store multiple cache items.
 ```js
 const cacheDependency = require('diesis').cacheDependency
 const cacheTTL = cacheDependency({ len: 1, ttl: 1 })

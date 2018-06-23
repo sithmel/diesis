@@ -1,5 +1,5 @@
 /* eslint-env node, mocha */
-const objId = require('../src/obj-id')
+const objId = require('../es2015/obj-id')
 const assert = require('chai').assert
 
 describe('deps to key', (done) => {

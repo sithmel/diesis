@@ -1,9 +1,17 @@
+/*
+This is an id generator that work with a strong assumptions.
+The id equality holds true in the same process
+*/
+
 let id = 0
 
 function getId () {
   id++
   return id.toString(36)
 }
+
+// https://github.com/darkskyapp/string-hash
+// http://www.cse.yorku.ca/~oz/hash.html
 
 function stringHash (str) {
   let hash = 5381
