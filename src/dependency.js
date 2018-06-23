@@ -21,18 +21,16 @@ class Dependency {
   run (_cache = {}) {
     const cache = _cache instanceof Map ? _cache : new Map(Object.entries(_cache))
 
-    const getPromiseFromDep = (dep) => {
-      if (!cache.has(dep.id)) {
-        try {
-          const value = getPromisesFromDeps(dep.deps(cache))
-            .then((deps) => dep.func(...deps))
-          cache.set(dep.id, value)
-        } catch (err) {
-          return Promise.reject(err)
-        }
-      }
-      return cache.get(dep.id)
-    }
+    const getPromiseFromDep = (dep) =>
+      Promise.resolve()
+        .then(() => {
+          if (!cache.has(dep.id)) {
+            const value = getPromisesFromDeps(dep.deps(cache))
+              .then((deps) => dep.func(...deps))
+            cache.set(dep.id, value)
+          }
+          return cache.get(dep.id)
+        })
 
     const getPromisesFromDeps = (deps) =>
       Promise.all(deps.map(getPromiseFromDep))

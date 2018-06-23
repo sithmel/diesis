@@ -5,7 +5,7 @@ function memoize (func) {
       return cache
     }
     const result = func(...deps)
-    if (typeof result === 'object' && 'then' in result) {
+    if (result instanceof Promise) {
       return result
         .then((res) => {
           cache = result

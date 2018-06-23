@@ -158,7 +158,7 @@ const readFile = dependency(['filename'], promisify((filename, callback) => {
 Included decorators
 -------------------
 You frequently need to cache the output of a dependency, for example when creating a connection to external resources. This package includes a decorators to do so.
-The memoize decorator caches the dependency forever, if the function didn't throw an exception.
+The memoize decorator caches the dependency forever, if the function doesn't throw an exception.
 ```js
 const memoize = require('diesis').memoize
 
@@ -167,9 +167,7 @@ const memoizedDep = dependency([a, b], memoize((a, b) => {
 }))
 ```
 
-cacheDependency decorator
--------------------------
-the cacheDependency decorator allows you to fine tune the dependency caching.
+The cacheDependency decorator allows you to fine tune the dependency caching.
 The result is cached against the arguments. They are checked by reference (strict equality).
 If the decorated function throws an exception or returns a rejected promise, this is not cached.
 
@@ -186,7 +184,30 @@ const cachedDep = dependency([a, b], cacheTTL((a, b) => {
 * len: is the number of items in the cache
 * ttl: is the time to live of cached items (in ms)
 
+If you want to disallow having undefined as argument, you can use the noUndef decorator. This will throw an exception (on run time) when an argument is set to undefined.
+```js
+const noUndef = require('diesis').noUndef
+
+// this throws an exception rather than returning NaN
+const multiply = dependency([a, b], noUndef((a, b) => a * b))
+```
+
+You can combine multiple decorators with a function using "decorate"
+
+```js
+const noUndef = require('diesis').noUndef
+const memoize = require('diesis').memoize
+const decorate = require('diesis').decorate
+
+// the last argument is the function to decorate
+const multiply = dependency([a, b], decorate(noUndef, memoize, (a, b) => a * b)
+```
+
 **You can find many useful decorators in [async-deco](https://github.com/sithmel/async-deco) library (use the promise based ones).**
+
+diesis and type checking
+------------------------
+The goal of diesis is to reduce the complexity of the code and to make its evolution easier. It obtains this goal wiring up the dependencies at run time. This feature sadly defeats the static analysis of typescript and flowtype, when used on the dependencies themselves.
 
 Compatibility
 -------------

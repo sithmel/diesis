@@ -1,6 +1,9 @@
 const Dependency = require('./dependency')
 const cacheDependency = require('./cache-dependency')
 const memoize = require('./memoize')
+const compose = require('./compose')
+const decorate = require('./decorate')
+const noUndef = require('./no-undef')
 
 function dependsOn (deps) {
   function curried (func) {
@@ -23,4 +26,14 @@ function runMulti (deps, obj) {
   return dep.run(obj)
 }
 
-module.exports = { Dependency, dependency, dependsOn, runMulti, cacheDependency, memoize }
+module.exports = {
+  Dependency,
+  dependency,
+  dependsOn,
+  runMulti,
+  cacheDependency,
+  memoize,
+  compose,
+  decorate,
+  noUndef
+}

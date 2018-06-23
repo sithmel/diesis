@@ -113,7 +113,6 @@ describe('Dependency', () => {
 
       d3.run(new Map([[obj, 10]]))
         .catch(e => {
-          console.log(e)
           assert.equal(e.message, 'A dependency should depend on an array of dependencies or values (not a dependency or a string)')
           done()
         })
