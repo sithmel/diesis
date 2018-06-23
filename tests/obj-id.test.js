@@ -39,7 +39,7 @@ describe('deps to key', (done) => {
     })
 
     it('returns consistent values: symbol', () => {
-      assert.throws(() => objId.getIdFromValue(Symbol('hello')), 'Cannot compute id');
+      assert.throws(() => objId.getIdFromValue(Symbol('hello')), 'Cannot compute id')
     })
 
     it('returns consistent values: objects', () => {

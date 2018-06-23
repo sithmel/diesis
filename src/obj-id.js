@@ -1,11 +1,11 @@
 let id = 0
 
-function getId() {
+function getId () {
   id++
   return id.toString(36)
 }
 
-function stringHash(str) {
+function stringHash (str) {
   let hash = 5381
   let i = str.length
 
