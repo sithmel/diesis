@@ -219,12 +219,4 @@ const decorate = require('diesis').decorate
 const multiply = dependency([a, b], decorate(noUndef, memoize, (a, b) => a * b)
 ```
 
-**You can find many useful decorators in [async-deco](https://github.com/sithmel/async-deco) library (use the promise based ones).**
-
-diesis and type checking
-------------------------
-The goal of diesis is to reduce the complexity of the code and to make its evolution easier. It obtains this goal wiring up the dependencies at run time. This feature sadly defeats the static analysis of typescript and flowtype, when used on the dependencies themselves.
-
-Compatibility
--------------
-ES2015
+**You can find many useful decorators in [async-deco](https://github.com/sithmel/async-deco) library.**
