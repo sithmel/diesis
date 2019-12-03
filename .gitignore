@@ -3,3 +3,4 @@ bower_components
 /es5
 /es2015
 .DS_Store
+package-lock.json
