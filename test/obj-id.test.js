@@ -1,5 +1,4 @@
-/* eslint-env node, mocha */
-const objId = require('../es2015/obj-id')
+const objId = require('../src/obj-id')
 const assert = require('chai').assert
 
 describe('deps to key', (done) => {
@@ -59,8 +58,8 @@ describe('deps to key', (done) => {
 
   describe('getIdFromValues', () => {
     it('returns consistent values', () => {
-      assert.equal(objId.getIdFromValues([ 1, 2 ]), objId.getIdFromValues([ 1, 2 ]))
-      assert.notEqual(objId.getIdFromValues([ 1, 2 ]), objId.getIdFromValues([ 1, 3 ]))
+      assert.equal(objId.getIdFromValues([1, 2]), objId.getIdFromValues([1, 2]))
+      assert.notEqual(objId.getIdFromValues([1, 2]), objId.getIdFromValues([1, 3]))
     })
     it('return nothing for empty object', () => {
       assert.equal(objId.getIdFromValues([]), 'a#')

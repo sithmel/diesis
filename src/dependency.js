@@ -6,7 +6,7 @@ class Value {
   }
 }
 
-export default class Dependency {
+class Dependency {
   constructor (deps, func) {
     if (typeof func === 'undefined') {
       func = deps
@@ -56,8 +56,7 @@ export default class Dependency {
   }
 }
 
-
-export function dependsOn (deps) {
+function dependsOn (deps) {
   function curried (func) {
     const dep = new Dependency(deps, func)
     function _dependsOn (obj) {
@@ -69,11 +68,18 @@ export function dependsOn (deps) {
   return curried
 }
 
-export function dependency (deps, func) {
+function dependency (deps, func) {
   return dependsOn(deps)(func)
 }
 
-export function runMulti (deps, obj) {
+function runMulti (deps, obj) {
   const dep = new Dependency(deps, (...deps) => deps)
   return dep.run(obj)
+}
+
+module.exports = {
+  Dependency,
+  dependency,
+  dependsOn,
+  runMulti
 }

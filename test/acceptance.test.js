@@ -1,6 +1,5 @@
-/* eslint-env node, mocha */
-const dependency = require('../es2015').dependency
-const runMulti = require('../es2015').runMulti
+const dependency = require('../src').dependency
+const runMulti = require('../src').runMulti
 const assert = require('chai').assert
 
 describe('solve graphs', () => {
@@ -57,7 +56,7 @@ describe('solve graphs', () => {
     it('run multiple', () =>
       runMulti([b, d], {})
         .then((res) => {
-          assert.deepEqual(res, [ 'AB', 'ABAABCD' ])
+          assert.deepEqual(res, ['AB', 'ABAABCD'])
           assert.deepEqual(counter, { a: 1, b: 1, c: 1, d: 1 })
         }))
   })

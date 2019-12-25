@@ -1,5 +1,4 @@
-/* eslint-env node, mocha */
-const noUndef = require('../es2015').noUndef
+const noUndef = require('../src').noUndef
 const assert = require('chai').assert
 
 describe('noUndef', () => {

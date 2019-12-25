@@ -1,7 +1,6 @@
-/* eslint-env node, mocha */
-const dependency = require('../es2015').dependency
-const dependsOn = require('../es2015').dependsOn
-const Dependency = require('../es2015').Dependency
+const dependency = require('../src').dependency
+const dependsOn = require('../src').dependsOn
+const Dependency = require('../src').Dependency
 
 const assert = require('chai').assert
 

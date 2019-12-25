@@ -1,7 +1,7 @@
-import objId from './obj-id'
-import LRUCache from 'little-ds-toolkit/lib/lru-cache'
+const objId = require('./obj-id')
+const LRUCache = require('little-ds-toolkit/lib/lru-cache')
 
-export default function cacheDependency ({ len, ttl }) {
+module.exports = function cacheDependency ({ len, ttl }) {
   return function _cacheDependency (func) {
     const cache = new LRUCache({ maxLen: len, defaultTTL: ttl })
     return function cachedService (...deps) {

@@ -1,5 +1,4 @@
-/* eslint-env node, mocha */
-const decorate = require('../es2015').decorate
+const decorate = require('../src').decorate
 const assert = require('chai').assert
 
 const square = (f) => (...args) => {

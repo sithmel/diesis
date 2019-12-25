@@ -1,5 +1,4 @@
-/* eslint-env node, mocha */
-const memoize = require('../es2015').memoize
+const memoize = require('../src').memoize
 const assert = require('chai').assert
 
 describe('memoize', () => {
