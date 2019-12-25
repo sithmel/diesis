@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### todo:
 - remove transpilation DONE
-- remove all decorators
+- remove all decorators DONE
 - revamp documentation (and presentation)
 - add memoize feature
 - reset memoization feature
