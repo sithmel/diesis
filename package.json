@@ -6,7 +6,6 @@
   "scripts": {
     "test": "mocha",
     "lint": "eslint --fix --ext .js ./src ./test",
-    "prepublish": "npm run build",
     "precommit": "npm run lint",
     "prepush": "npm run test"
   },
