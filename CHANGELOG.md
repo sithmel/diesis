@@ -6,13 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### todo:
-- remove transpilation DONE
-- remove all decorators DONE
-- revamp documentation (and presentation)
-- add memoize feature
-- reset memoization feature
+### todo
 - adjecency list feature (d3 library?)
+
+### removed
+- transpilation
+- all decorators
+- dependsOn
+- "dependency" returns an object instead of a function
+
+### added
+- memoize feature
 
 ## [1.0.1] - 2018-11-19
 ### Fixed
