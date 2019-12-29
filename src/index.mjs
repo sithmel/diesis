@@ -1,6 +1,0 @@
-export { default as Dependency, dependency, dependsOn, runMulti } from './dependency'
-export { default as cacheDependency } from './cache-dependency'
-export { default as memoize } from './memoize'
-export { default as compose } from './compose'
-export { default as decorate } from './decorate'
-export { default as noUndef } from './no-undef'
