@@ -40,7 +40,7 @@ const { dependency, run } = diesis
 const hello = dependency(() => 'hello')
 const world = dependency([hello], (s) => `${s} world`)
 
-run(world)
+world()
   .then((res) => res) // res is 'hello world'
 ```
 In that way I declared that the first argument of "world" will always be the result of the "hello" function. The resulting function returns always asynchronously.
@@ -51,7 +51,7 @@ You can override some dependency (for testing for example). In that case you nee
 const deps = new Map()
 deps.set(hello, () => 'bye')
 
-run(world, deps)
+world(deps)
   .then((res) => res) // res is 'bye world'
 ```
 
@@ -61,29 +61,60 @@ You can use the same feature to inject a different sets of dependencies. If thes
 const hello = dependency(() => 'hello')
 const world = dependency([hello, 'emphasis'], (s, emphasis) => `${s} world${emphasis && '!'}`)
 
-run(world, { emphasis: true })
+world({ emphasis: true })
   .then((res) => res) // res is 'hello world!'
 
-run(world, { emphasis: false })
+world({ emphasis: false })
   .then((res) => res) // res is 'hello world'
 ```
 
 ## Shortcuts
-If there are no dependencies you can omit the first argument.
+If there are no dependencies you can omit the first argument. Or just use a function.
 You can pass any value instead of a function, this will be converted to a function returning that value. For example:
 ```js
 const hello = dependency([], () => 'hello')
 // is equivalent to
 const hello = dependency(() => 'hello')
 // is equivalent to
+const hello = () => 'hello')
+// is also equivalent to
 const hello = dependency('hello')
 ```
 
-## Running multiple dependencies
-You can pass multiple dependencies passing an array:
+## run multiple dependencies
+If you want to run multiple dependencies you might be tempted to use Promise.all:
 ```js
-run([dependency1, dependency2, dependency3])
+Promise.all([dependency1(), dependency2(), dependency3()])
   .then((res) => res) // res is an array containing the 3 resolved dependencies
+```
+This might return the correct result (if the dependencies are pure functions).
+But common dependencies can be executed multiple times. To avoid this, you can use run:
+```js
+const run = require('diesis').run
+run([dependency1, dependency2, dependency3]) // this can take an additional argument to override dependencies
+  .then((res) => res) // res is an array containing the 3 resolved dependencies
+```
+You can use `run` to run a single dependency as well:
+```js
+run(dependency1)
+  .then((res) => res)
+// is equivalent to
+dependency1()
+  .then((res) => res)
+```
+
+## dependencyMemo
+Often times you want to execute a dependency once and store the result. For example, creating a connection to a database.
+This is the behaviour of `dependencyMemo`:
+```js
+const dbConnection = dependencyMemo([config], (config) => {
+  // this function is executed only once. The result is memoized.
+})
+```
+A dependency is only executed when necessary, so `config` is not executed when the result of dbConnection is memoized.
+You can clear the previously saved result using the `reset` method (on the dependency object).
+```js
+dbConnection.dep.reset()
 ```
 
 ## A more meaningful example

@@ -26,10 +26,6 @@ class Dependency {
     this.func = typeof func === 'function' ? func : () => func
   }
 
-  run (_cache = {}) {
-    return run(this, _cache)
-  }
-
   deps (cache) {
     const _deps = this._deps(cache)
     if (!Array.isArray(_deps)) {
@@ -38,6 +34,8 @@ class Dependency {
     return _deps.map((d) => {
       if (d instanceof Dependency) {
         return d
+      } else if (typeof d === 'function' && d.dep instanceof Dependency) {
+        return d.dep
       } else if (typeof d === 'function') {
         return new Func(d)
       } else if (typeof d === 'string') {
@@ -80,17 +78,29 @@ class DependencyMemo extends Dependency {
 }
 
 function dependency (deps, func) {
-  return new Dependency(deps, func)
+  const dep = new Dependency(deps, func)
+  function _run (obj) {
+    return run(dep, obj)
+  }
+  _run.dep = dep
+  return _run
 }
 
 function dependencyMemo (deps, func) {
-  return new DependencyMemo(deps, func)
+  const dep = new DependencyMemo(deps, func)
+  function _run (obj) {
+    return run(dep, obj)
+  }
+  _run.dep = dep
+  return _run
 }
 
 function run (deps, _cache = {}) {
   if (Array.isArray(deps)) {
     const dep = new Dependency(deps, (...deps) => deps)
     return run(dep, _cache)
+  } else if (typeof deps === 'function' && deps.dep instanceof Dependency) {
+    return run(deps.dep, _cache)
   }
 
   const cache = _cache instanceof Map ? _cache : new Map(Object.entries(_cache))

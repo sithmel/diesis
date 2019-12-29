@@ -40,19 +40,19 @@ describe('solve graphs', () => {
     })
 
     it('must return leftmost dep', () =>
-      a.run().then((dep) => assert.equal(dep, 'A')))
+      a().then((dep) => assert.equal(dep, 'A')))
 
     it('must return middle dep', () =>
-      b.run().then((dep) => assert.equal(dep, 'AB')))
+      b().then((dep) => assert.equal(dep, 'AB')))
 
     it('must return middle dep (2)', () =>
-      c.run().then((dep) => assert.equal(dep, 'AABC')))
+      c().then((dep) => assert.equal(dep, 'AABC')))
 
     it('must return rightmost dep', () =>
-      d.run().then((dep) => assert.equal(dep, 'ABAABCD')))
+      d().then((dep) => assert.equal(dep, 'ABAABCD')))
 
     it('must execute dep only once', () =>
-      d.run().then((dep) => assert.deepEqual(counter, { a: 1, b: 1, c: 1, d: 1 })))
+      d().then((dep) => assert.deepEqual(counter, { a: 1, b: 1, c: 1, d: 1 })))
 
     it('run single', () =>
       run(b, {})
@@ -104,34 +104,34 @@ describe('solve graphs', () => {
     })
 
     it('must return leftmost dep', () =>
-      a.run().then((dep) => assert.equal(dep, 'A')))
+      a().then((dep) => assert.equal(dep, 'A')))
 
     it('must return middle dep', () =>
-      b.run().then((dep) => assert.equal(dep, 'AB')))
+      b().then((dep) => assert.equal(dep, 'AB')))
 
     it('must return middle dep (2)', () =>
-      c.run().then((dep) => assert.equal(dep, 'AABC')))
+      c().then((dep) => assert.equal(dep, 'AABC')))
 
     it('must return rightmost dep', () =>
-      d.run().then((dep) => assert.equal(dep, 'ABAABCD')))
+      d().then((dep) => assert.equal(dep, 'ABAABCD')))
 
     it('must execute dep only once', () =>
-      d.run().then((dep) => assert.deepEqual(counter, { a: 1, b: 1, c: 1, d: 1 })))
+      d().then((dep) => assert.deepEqual(counter, { a: 1, b: 1, c: 1, d: 1 })))
 
     it('must return rightmost dep (and memoize)', async () => {
-      const dep = await d.run()
+      const dep = await d()
       assert.equal(dep, 'ABAABCD')
       assert.deepEqual(counter, { a: 1, b: 1, c: 1, d: 1 })
 
       counter = { a: 0, b: 0, c: 0, d: 0 }
-      const dep2 = await d.run()
+      const dep2 = await d()
       assert.equal(dep2, 'ABAABCD')
       assert.deepEqual(counter, { a: 0, b: 0, c: 0, d: 1 })
 
-      b.reset()
+      b.dep.reset()
       counter = { a: 0, b: 0, c: 0, d: 0 }
 
-      const dep3 = await d.run()
+      const dep3 = await d()
       assert.equal(dep3, 'ABAABCD')
       assert.deepEqual(counter, { a: 1, b: 1, c: 0, d: 1 })
     })

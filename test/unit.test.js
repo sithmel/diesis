@@ -1,11 +1,12 @@
 const Dependency = require('../src').Dependency
+const run = require('../src').run
 const assert = require('chai').assert
 
 describe('Dependency', () => {
   describe('run', () => {
     it('resolve single function', (done) => {
       const d = new Dependency([], 3)
-      d.run()
+      run(d)
         .then((res) => {
           assert.equal(res, 3)
           done()
@@ -15,7 +16,7 @@ describe('Dependency', () => {
     it('resolve a single dependency', (done) => {
       const d1 = new Dependency([], 3)
       const d2 = new Dependency([d1], (d1) => d1 * 2)
-      d2.run()
+      run(d2)
         .then((res) => {
           assert.equal(res, 6)
           done()
@@ -25,7 +26,7 @@ describe('Dependency', () => {
     it('can rely on simple function', (done) => {
       const d1 = () => 3
       const d2 = new Dependency([d1], (d1) => d1 * 2)
-      d2.run()
+      run(d2)
         .then((res) => {
           assert.equal(res, 6)
           done()
@@ -36,7 +37,7 @@ describe('Dependency', () => {
       const d1 = new Dependency([], 5)
       const d2 = new Dependency([], 2)
       const d3 = new Dependency([d1, d2], (d1, d2) => d1 * d2)
-      d3.run()
+      run(d3)
         .then((res) => {
           assert.equal(res, 10)
           done()
@@ -54,7 +55,7 @@ describe('Dependency', () => {
       })
       const d3 = new Dependency([d1, d2], (d1, d2) => d1 * d2)
 
-      d3.run()
+      run(d3)
         .then((res) => {
           assert.equal(res, 10)
           assert.equal(d1Execution, 1)
@@ -73,7 +74,7 @@ describe('Dependency', () => {
       })
       const d3 = new Dependency([d1, d2, 'mul'], (d1, d2, mul) => d1 * d2 * mul)
 
-      d3.run({ mul: 10 })
+      run(d3, { mul: 10 })
         .then((res) => {
           assert.equal(res, 100)
           assert.equal(d1Execution, 1)
@@ -85,7 +86,7 @@ describe('Dependency', () => {
       const obj = {}
       const d3 = new Dependency([obj], (mul) => 10 * mul)
 
-      d3.run(new Map([[obj, 10]]))
+      run(d3, new Map([[obj, 10]]))
         .catch(e => {
           assert.equal(e.message, 'A dependency should depend on an array of dependencies or values (not a dependency or a string)')
           done()
@@ -103,7 +104,7 @@ describe('Dependency', () => {
       })
       const d3 = new Dependency([d1, d2, 'mul'], (d1, d2, mul) => d1 * d2 * mul)
 
-      d3.run(new Map([['mul', 10], [d2, 11]]))
+      run(d3, new Map([['mul', 10], [d2, 11]]))
         .then((res) => {
           assert.equal(res, 220)
           assert.equal(d1Execution, 1)
