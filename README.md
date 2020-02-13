@@ -6,20 +6,21 @@
 
 Diesis is a declarative dependency injection library.
 It allows to define a group of functions in a graph of dependencies, removing the manual wiring necessary to connect the functions one another. It also ensures every dependency is executed at most once.
-It works with functions returning synchronously or asynchronously (returning a promise).
+It works with functions returning synchronously or asynchronously (returning a promise). It also makes testing way easier.
 
 [A presentation about diesis](https://slides.com/sithmel/diesis)
 
 ## Compatibility
-Diesis is written in ES2015 and uses [Promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) and [Maps](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map). It uses commonjs to ensure the broadest compatibility.
+Diesis is written in ES2015 and uses [Promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) and [Maps](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map). It uses commonjs to ensure the broadest compatibility. It runs on all supported node versions and modern browsers without transpilation or polyfilling. It has no dependencies and has a minimal footprint.
 
 ## Importing diesis
 You can import diesis as ES module or using commonjs:
 ```js
 import { dependency, run } from 'diesis'
 
-const diesis = require('diesis')
-const { dependency, run } = diesis
+// or
+
+const { dependency, run } = require('diesis')
 ```
 
 ## Using diesis
@@ -35,8 +36,7 @@ world(greeting) // it returns 'hello world'
 ```
 diesis can be used to automate the dependency resolution. Let's write the functions like this instead:
 ```js
-const diesis = require('diesis').dependency
-const { dependency, run } = diesis
+const { dependency } = require('diesis')
 
 const hello = dependency(() => 'hello')
 const world = dependency([hello], (s) => `${s} world`)
@@ -53,6 +53,11 @@ const deps = new Map()
 deps.set(hello, () => 'bye')
 
 world(deps)
+  .then((res) => res) // res is 'bye world'
+```
+To make thing easier you can also pass an array or key/value pairs. This will be converted to a Map:
+```js
+world([[hello, () => 'bye']])
   .then((res) => res) // res is 'bye world'
 ```
 
@@ -117,6 +122,8 @@ You can clear the previously saved result using the `reset` method (on the depen
 ```js
 dbConnection.dep.reset()
 ```
+A piece of advice: there is a caveat, exporting a memoized dependency with a side effect (for example, opening a network connection). Because of the way node resolve dependencies, different dependencies might be used. Let's say that your application "A" dependes on packages "B" and "C". "B" and "C" depends on "D" which exports a memoized dependency. But "B" and "C" requires a different incompatible version of "D".
+In this case node will resolve 2 distinct version of "D" and they will be memoized independently. You can verify this with ```npm list```.
 
 ## A more meaningful example
 If you are still struggling to understand how this can be useful, here's a more articulated example. For making it simpler I'll omit the implementation of these functions, providing only a description.
