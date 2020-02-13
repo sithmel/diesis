@@ -97,7 +97,7 @@ function dependencyMemo (deps, func) {
   return _run
 }
 
-function cacheToMap(obj) {
+function cacheToMap (obj) {
   if (obj instanceof Map) {
     return obj
   }
@@ -107,7 +107,7 @@ function cacheToMap(obj) {
   if (typeof obj === 'object') {
     return new Map(Object.entries(obj))
   }
-  throw new Error('Cache must be either a Map, an array of key7value pairs or an object')
+  throw new Error('Cache must be either a Map, an array of key/value pairs or an object')
 }
 
 function run (deps, _cache = {}) {

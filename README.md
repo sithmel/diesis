@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/sithmel/diesis.svg?branch=master)](https://travis-ci.org/sithmel/diesis)
 [![dependency Status](https://david-dm.org/sithmel/diesis.svg)](https://david-dm.org/sithmel/diesis.svg)
+[![Coverage Status](https://img.shields.io/coveralls/github/sithmel/diesis/master.svg)](https://coveralls.io/r/sithmel/diesis?branch=master)
 
 Diesis is a declarative dependency injection library.
 It allows to define a group of functions in a graph of dependencies, removing the manual wiring necessary to connect the functions one another. It also ensures every dependency is executed at most once.

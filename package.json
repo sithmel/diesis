@@ -5,9 +5,11 @@
   "main": "src/index.js",
   "scripts": {
     "test": "mocha",
+    "watch": "npm run test -- -w", 
     "lint": "eslint --fix --ext .js ./src ./test",
     "precommit": "npm run lint",
-    "prepush": "npm run test"
+    "prepush": "npm run test",
+    "coverage": "nyc npm run test"
   },
   "keywords": [
     "plugins",
@@ -25,7 +27,8 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "husky": "^3.1.0",
-    "mocha": "^6.2.2"
+    "mocha": "^6.2.2",
+    "nyc": "^15.0.0"
   },
   "dependencies": {}
 }

@@ -63,7 +63,7 @@ describe('Dependency', () => {
         })
     })
 
-    it('allows injecting a value', (done) => {
+    it('allows injecting a value (using object or map or array)', async () => {
       let d1Execution = 0
       const d1 = new Dependency([], () => {
         d1Execution++
@@ -74,12 +74,15 @@ describe('Dependency', () => {
       })
       const d3 = new Dependency([d1, d2, 'mul'], (d1, d2, mul) => d1 * d2 * mul)
 
-      run(d3, { mul: 10 })
-        .then((res) => {
-          assert.equal(res, 100)
-          assert.equal(d1Execution, 1)
-          done()
-        })
+      const res = await run(d3, { mul: 10 })
+      assert.equal(res, 100)
+      assert.equal(d1Execution, 1)
+
+      const res2 = await run(d3, [['mul', 10]])
+      assert.equal(res2, 100)
+
+      const res3 = await run(d3, new Map([['mul', 10]]))
+      assert.equal(res3, 100)
     })
 
     it('does not allows injecting a value (use obj)', (done) => {

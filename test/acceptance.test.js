@@ -66,6 +66,49 @@ describe('solve graphs', () => {
           assert.deepEqual(res, ['AB', 'ABAABCD'])
           assert.deepEqual(counter, { a: 1, b: 1, c: 1, d: 1 })
         }))
+
+    it('dependency defaults to empty array', async () => {
+      const empty = dependency(() => {
+        return 'empty'
+      })
+      const res = await empty()
+      assert.equal(res, 'empty')
+    })
+
+    it('dependency defaults to empty array when falsy', async () => {
+      const empty = dependency(null, () => {
+        return 'empty'
+      })
+      const res = await empty()
+      assert.equal(res, 'empty')
+    })
+
+    it('dependency can be a function', async () => {
+      const empty = dependency(() => [], () => {
+        return 'empty'
+      })
+      const res = await empty()
+      assert.equal(res, 'empty')
+    })
+
+    it('must throw on invalid dependencies', async () => {
+      const buggy = dependency('invalid', () => {})
+      try {
+        await buggy()
+        throw new Error('on no!')
+      } catch (e) {
+        assert.equal(e.message, 'A dependency should depend on an array of dependencies or values (not an array)')
+      }
+    })
+
+    it('must throw on invalid cache', async () => {
+      try {
+        await d('invalid cache')
+        throw new Error('on no!')
+      } catch (e) {
+        assert.equal(e.message, 'Cache must be either a Map, an array of key/value pairs or an object')
+      }
+    })
   })
 
   describe('4 functions with memo', () => {
@@ -144,6 +187,19 @@ describe('solve graphs', () => {
       // it is a consequence of the sequence dependencies are resolved
       // it is a minor issue on a corner case. So I won't worry
       assert.deepEqual(counter, { a: 2, b: 1, c: 1, d: 2 })
+    })
+
+    it('must not memoize when function throw', async () => {
+      const buggy = dependencyMemo([], () => {
+        throw new Error('broken')
+      })
+      try {
+        await buggy()
+        throw new Error('on no!')
+      } catch (e) {
+        assert.equal(e.message, 'broken')
+        assert.equal(buggy.dep.isMemoized, false)
+      }
     })
 
     it('run single', () =>
