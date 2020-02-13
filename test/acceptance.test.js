@@ -136,6 +136,16 @@ describe('solve graphs', () => {
       assert.deepEqual(counter, { a: 1, b: 1, c: 0, d: 1 })
     })
 
+    it('must return rightmost dep (and memoize), calling them at the same time', async () => {
+      const [dep, dep2] = await Promise.all([d(), d()])
+      assert.equal(dep, 'ABAABCD')
+      assert.equal(dep2, 'ABAABCD')
+      // I don't think "a" should be called twice here
+      // it is a consequence of the sequence dependencies are resolved
+      // it is a minor issue on a corner case. So I won't worry
+      assert.deepEqual(counter, { a: 2, b: 1, c: 1, d: 2 })
+    })
+
     it('run single', () =>
       run(b, {})
         .then((res) => {

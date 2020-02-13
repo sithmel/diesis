@@ -55,13 +55,15 @@ class DependencyMemo extends Dependency {
       if (this.isMemoized) {
         return this.memo
       }
-      return Promise.resolve()
+      const p = Promise.resolve()
         .then(() => originalFunction(...args))
-        .then((res) => {
-          this.isMemoized = true
-          this.memo = res
-          return res
+        .catch((err) => {
+          this.reset()
+          throw err
         })
+      this.isMemoized = true
+      this.memo = p
+      return p
     }
     this.reset()
   }
@@ -95,6 +97,19 @@ function dependencyMemo (deps, func) {
   return _run
 }
 
+function cacheToMap(obj) {
+  if (obj instanceof Map) {
+    return obj
+  }
+  if (Array.isArray(obj)) {
+    return new Map(obj) // I consider obj to be an array of key value pairs
+  }
+  if (typeof obj === 'object') {
+    return new Map(Object.entries(obj))
+  }
+  throw new Error('Cache must be either a Map, an array of key7value pairs or an object')
+}
+
 function run (deps, _cache = {}) {
   if (Array.isArray(deps)) {
     const dep = new Dependency(deps, (...deps) => deps)
@@ -103,7 +118,7 @@ function run (deps, _cache = {}) {
     return run(deps.dep, _cache)
   }
 
-  const cache = _cache instanceof Map ? _cache : new Map(Object.entries(_cache))
+  const cache = cacheToMap(_cache)
 
   const getPromiseFromDep = (dep) =>
     Promise.resolve()
