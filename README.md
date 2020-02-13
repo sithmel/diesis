@@ -157,7 +157,7 @@ renderTemplate({ userId: 12345, resourceId: 23456 })
   })
 ```
 
-![Graph example](docs/example.svg)
+![Graph example](docs/example.png)
 
 ## Testing
 the "dependency" object contains the original function in the "func" attribute. This can be used to test the function in isolation:
