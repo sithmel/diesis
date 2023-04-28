@@ -1,10 +1,15 @@
-const Dependency = require('../src').Dependency
-const run = require('../src').run
-const assert = require('chai').assert
+import diesis from '../src/index.js'
+
+import pkg from 'zunit'
+import assert from 'assert'
+
+const { describe, it }  = pkg
+const Dependency = diesis.Dependency
+const run = diesis.run
 
 describe('Dependency', () => {
   describe('run', () => {
-    it('resolve single function', (done) => {
+    it('resolve single function', (_test, done) => {
       const d = new Dependency([], 3)
       run(d)
         .then((res) => {
@@ -13,7 +18,7 @@ describe('Dependency', () => {
         })
     })
 
-    it('resolve a single dependency', (done) => {
+    it('resolve a single dependency', (_test, done) => {
       const d1 = new Dependency([], 3)
       const d2 = new Dependency([d1], (d1) => d1 * 2)
       run(d2)
@@ -23,7 +28,7 @@ describe('Dependency', () => {
         })
     })
 
-    it('can rely on simple function', (done) => {
+    it('can rely on simple function', (_test, done) => {
       const d1 = () => 3
       const d2 = new Dependency([d1], (d1) => d1 * 2)
       run(d2)
@@ -33,7 +38,7 @@ describe('Dependency', () => {
         })
     })
 
-    it('resolve 2 dependencies', (done) => {
+    it('resolve 2 dependencies', (_test, done) => {
       const d1 = new Dependency([], 5)
       const d2 = new Dependency([], 2)
       const d3 = new Dependency([d1, d2], (d1, d2) => d1 * d2)
@@ -44,7 +49,7 @@ describe('Dependency', () => {
         })
     })
 
-    it('execute only once', (done) => {
+    it('execute only once', (_test, done) => {
       let d1Execution = 0
       const d1 = new Dependency([], () => {
         d1Execution++
@@ -85,7 +90,7 @@ describe('Dependency', () => {
       assert.equal(res3, 100)
     })
 
-    it('does not allows injecting a value (use obj)', (done) => {
+    it('does not allows injecting a value (use obj)', (_test, done) => {
       const obj = {}
       const d3 = new Dependency([obj], (mul) => 10 * mul)
 
@@ -96,7 +101,7 @@ describe('Dependency', () => {
         })
     })
 
-    it('allows overriding a value', (done) => {
+    it('allows overriding a value', (_test, done) => {
       let d1Execution = 0
       const d1 = new Dependency([], () => {
         d1Execution++

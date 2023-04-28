@@ -1,3 +1,10 @@
+
+const DEPS_FUNCTION_ATTRIBUTE = "_dep";
+
+function isFunctionDependency (func) {
+  return typeof func === 'function' && func[DEPS_FUNCTION_ATTRIBUTE] instanceof Dependency
+}
+
 class Value {
   constructor (value) {
     this.deps = () => []
@@ -34,8 +41,8 @@ class Dependency {
     return _deps.map((d) => {
       if (d instanceof Dependency) {
         return d
-      } else if (typeof d === 'function' && d.dep instanceof Dependency) {
-        return d.dep
+      } else if (isFunctionDependency(d)) {
+        return d[DEPS_FUNCTION_ATTRIBUTE]
       } else if (typeof d === 'function') {
         return new Func(d)
       } else if (typeof d === 'string') {
@@ -84,7 +91,7 @@ function dependency (deps, func) {
   function _run (obj) {
     return run(dep, obj)
   }
-  _run.dep = dep
+  _run[DEPS_FUNCTION_ATTRIBUTE] = dep
   return _run
 }
 
@@ -93,7 +100,7 @@ function dependencyMemo (deps, func) {
   function _run (obj) {
     return run(dep, obj)
   }
-  _run.dep = dep
+  _run[DEPS_FUNCTION_ATTRIBUTE] = dep
   return _run
 }
 
@@ -114,8 +121,8 @@ function run (deps, _cache = {}) {
   if (Array.isArray(deps)) {
     const dep = new Dependency(deps, (...deps) => deps)
     return run(dep, _cache)
-  } else if (typeof deps === 'function' && deps.dep instanceof Dependency) {
-    return run(deps.dep, _cache)
+  } else if (isFunctionDependency(deps)) {
+    return run(deps[DEPS_FUNCTION_ATTRIBUTE], _cache)
   }
 
   const cache = cacheToMap(_cache)
@@ -137,10 +144,21 @@ function run (deps, _cache = {}) {
   return getPromiseFromDep(deps)
 }
 
-module.exports = {
+function reset (_deps) {
+  const deps = Array.isArray(_deps) ? _deps : [_deps]
+  deps.forEach((depend) => {
+    const dep = isFunctionDependency(depend) ? dep[DEPS_FUNCTION_ATTRIBUTE] : depend
+    if ('reset' in dep) {
+      dep.reset()
+    }
+  })
+}
+
+export default {
   Dependency,
   dependency,
   DependencyMemo,
   dependencyMemo,
-  run
+  run,
+  reset
 }
